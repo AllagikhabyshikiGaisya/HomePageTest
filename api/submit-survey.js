@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const SECURITY_TOKEN = "vmn1iXSorkfzz_TUVMOokThE";
-  const LARK_BEARER_TOKEN = "YOUR_LARK_BEARER_TOKEN"; // <-- Replace with your actual Lark Bearer token
+  const LARK_BEARER_TOKEN = "vmn1iXSorkfzz_TUVMOokThE"; // <-- Replace with your actual Lark Bearer token
 
   if (req.method !== "POST") {
     res.status(405).json({ success: false, message: "Method not allowed" });
