@@ -1,26 +1,36 @@
-import axios from "axios";
-
-const WEBHOOK_URL = "https://y8xp2r4oy7i.jp.larksuite.com/base/automation/webhook/event/MFRJaYUcMw1YZ8hWu5ujNEdapnd";
-const BEARER_TOKEN = "IUsdohV1lbAt8R_rNbZKZc7k"; // keep this secret!
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ success: false, error: "Method not allowed" });
+    res.status(405).json({ success: false, message: "Method not allowed" });
+    return;
   }
 
-  try {
-    const payload = req.body;
+  const { name, email, rating, feedback } = req.body;
 
-    await axios.post(WEBHOOK_URL, payload, {
+  // TODO: Replace with your actual Lark Base webhook URL
+  const LARK_WEBHOOK_URL = "https://open.larksuite.com/open-apis/bitable/v1/apps/APP_TOKEN/tables/TABLE_ID/records";
+
+  try {
+    // Example: Send data to Lark Base (adjust as needed for your Lark API)
+    const response = await fetch(LARK_WEBHOOK_URL, {
+      method: "POST",
       headers: {
-        "Authorization": `Bearer ${BEARER_TOKEN}`,
         "Content-Type": "application/json",
+        // "Authorization": "Bearer YOUR_LARK_TOKEN", // If needed
       },
+      body: JSON.stringify({
+        fields: {
+          Name: name,
+          Email: email,
+          Rating: rating,
+          Feedback: feedback,
+        },
+      }),
     });
 
-    return res.status(200).json({ success: true });
+    if (!response.ok) throw new Error("Lark API error");
+
+    res.status(200).json({ success: true });
   } catch (err) {
-    console.error(err.response?.data || err.message);
-    return res.status(500).json({ success: false, error: "Failed to send to Lark" });
+    res.status(500).json({ success: false, message: err.message });
   }
 }
