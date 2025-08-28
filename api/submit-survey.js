@@ -32,14 +32,29 @@ export default async function handler(req, res) {
       }),
     });
 
+    const larkResult = await response.text();
+    console.log("Lark API response:", larkResult);
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Lark API error:", errorText);
-      res.status(500).json({ success: false, message: "Lark API error", details: errorText });
+      res.status(500).json({ success: false, message: "Lark API error", details: larkResult });
       return;
     }
 
-    res.status(200).json({ success: true });
+    // Optionally, check if the response contains an error field
+    let larkJson;
+    try {
+      larkJson = JSON.parse(larkResult);
+    } catch {
+      larkJson = null;
+    }
+
+    if (larkJson && larkJson.code && larkJson.code !== 0) {
+      // Lark API returned an error in the body
+      res.status(500).json({ success: false, message: "Lark API error", details: larkJson });
+      return;
+    }
+
+    res.status(200).json({ success: true, lark: larkJson });
   } catch (err) {
     console.error("Handler error:", err);
     res.status(500).json({ success: false, message: err.message });
