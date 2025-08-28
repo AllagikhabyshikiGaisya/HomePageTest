@@ -64,8 +64,8 @@
         feedback: form.feedback.value,
       };
 
+    // ...existing code...
       try {
-        // Send form data to your serverless backend with security token
         const res = await fetch("/api/submit-survey", {
           method: "POST",
           headers: { 
@@ -75,7 +75,13 @@
           body: JSON.stringify(data),
         });
 
-        const result = await res.json();
+        let result;
+        try {
+          result = await res.json();
+        } catch (jsonErr) {
+          document.getElementById("message").textContent = "⚠️ Server error (invalid response).";
+          return;
+        }
 
         if (result.success) {
           document.getElementById("message").textContent = "✅ Thank you for your feedback!";
@@ -87,6 +93,7 @@
         console.error(err);
         document.getElementById("message").textContent = "⚠️ Error submitting survey.";
       }
+// ...existing code...
     });
   </script>
 </body>

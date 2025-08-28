@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Replace with your chosen secret token
   const SECURITY_TOKEN = "vmn1iXSorkfzz_TUVMOokThE";
 
   if (req.method !== "POST") {
@@ -7,7 +6,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Check for security token in headers
   const clientToken = req.headers["x-security-token"];
   if (clientToken !== SECURITY_TOKEN) {
     res.status(401).json({ success: false, message: "Unauthorized: Invalid security token" });
@@ -23,7 +21,6 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // "Authorization": "Bearer YOUR_LARK_TOKEN", // If needed
       },
       body: JSON.stringify({
         fields: {
@@ -35,9 +32,16 @@ export default async function handler(req, res) {
       }),
     });
 
-    if (!response.ok) throw new Error("Lark API error");
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Lark API error:", errorText);
+      res.status(500).json({ success: false, message: "Lark API error", details: errorText });
+      return;
+    }
 
     res.status(200).json({ success: true });
   } catch (err) {
+    console.error("Handler error:", err);
     res.status(500).json({ success: false, message: err.message });
   }
+}
