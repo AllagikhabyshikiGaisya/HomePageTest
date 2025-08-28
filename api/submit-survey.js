@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const SECURITY_TOKEN = "vmn1iXSorkfzz_TUVMOokThE";
-  const LARK_BEARER_TOKEN = "vmn1iXSorkfzz_TUVMOokThE"; // <-- Replace with your actual Lark Bearer token
+  const LARK_BEARER_TOKEN = "WylwkmV8U9FNpYmDL0_eHg8x";
 
   if (req.method !== "POST") {
     res.status(405).json({ success: false, message: "Method not allowed" });
@@ -13,23 +13,50 @@ export default async function handler(req, res) {
     return;
   }
 
-  const { name, email, rating, feedback } = req.body;
+  const {
+    inquiry_number,
+    inquiry_date,
+    name,
+    postal_code,
+    address,
+    phone_number,
+    email,
+    trigger,
+    subject,
+    title,
+    url,
+    visit_location,
+    visit_date,
+    preferred_time,
+    division
+  } = req.body;
 
-  const LARK_WEBHOOK_URL = "https://y8xp2r4oy7i.jp.larksuite.com/base/automation/webhook/event/MFRJaYUcMw1YZ8hWu5ujNEdapnd";
+  const LARK_WEBHOOK_URL = "https://y8xp2r4oy7i.jp.larksuite.com/base/automation/webhook/event/CysKaiu8wwOpY9hsWChj3dXtpob";
 
   try {
     const response = await fetch(LARK_WEBHOOK_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${LARK_BEARER_TOKEN}`, // <-- Add Bearer token header
+        "Authorization": `Bearer ${LARK_BEARER_TOKEN}`,
       },
       body: JSON.stringify({
         fields: {
-          Name: name,
-          Email: email,
-          Rating: rating,
-          Feedback: feedback,
+          "問合せ番号": inquiry_number,
+          "問合せ日時": inquiry_date,
+          "名前": name,
+          "郵便番号": postal_code,
+          "住所": address,
+          "電話番号": phone_number,
+          "メールアドレス": email,
+          "きっかけ": trigger,
+          "件名": subject,
+          "タイトル": title,
+          "URL": url,
+          "★来場希望先": visit_location,
+          "来場希望日": visit_date,
+          "希望時間": preferred_time,
+          "事業部": division
         },
       }),
     });
