@@ -1,5 +1,6 @@
 export default async function handler(req, res) {
   const SECURITY_TOKEN = "vmn1iXSorkfzz_TUVMOokThE";
+  const LARK_BEARER_TOKEN = "YOUR_LARK_BEARER_TOKEN"; // <-- Replace with your actual Lark Bearer token
 
   if (req.method !== "POST") {
     res.status(405).json({ success: false, message: "Method not allowed" });
@@ -21,6 +22,7 @@ export default async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${LARK_BEARER_TOKEN}`, // <-- Add Bearer token header
       },
       body: JSON.stringify({
         fields: {
@@ -40,7 +42,6 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Optionally, check if the response contains an error field
     let larkJson;
     try {
       larkJson = JSON.parse(larkResult);
@@ -49,7 +50,6 @@ export default async function handler(req, res) {
     }
 
     if (larkJson && larkJson.code && larkJson.code !== 0) {
-      // Lark API returned an error in the body
       res.status(500).json({ success: false, message: "Lark API error", details: larkJson });
       return;
     }
