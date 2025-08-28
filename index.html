@@ -65,10 +65,13 @@
       };
 
       try {
-        // Send form data to your serverless backend
+        // Send form data to your serverless backend with security token
         const res = await fetch("/api/submit-survey", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "x-security-token": "vmn1iXSorkfzz_TUVMOokThE"
+          },
           body: JSON.stringify(data),
         });
 
